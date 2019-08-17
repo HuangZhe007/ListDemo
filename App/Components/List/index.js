@@ -86,21 +86,22 @@ export default class List extends Component {
         }, 1000);
     }
     render() {
-        const { indexArray, dataArray, Section_Height, Index_Height, showHeader, renderItem, renderSection, renderHeader } = this.props
+        const { indexArray, dataArray, Section_Height, Index_Height, showHeader, renderItem,
+            UpPullRefresh, renderSection, renderHeader } = this.props
         const top_offset = indexArray ? (screenH - indexArray.length * 15) / 3 : 0
         return (
             <View style={styles.Box}>
                 <LargeList
                     renderIndexPath={renderItem}
-                    renderSection={renderSection}
                     refreshHeader={UpPullLoading}
+                    data={dataArray ? dataArray : []}
                     renderFooter={this._renderFooter}
-                    onRefresh={this.props.UpPullRefresh}
                     ref={ref => (this._LargeList = ref)}
-                    heightForSection={() => Section_Height}
-                    heightForIndexPath={() => Index_Height}
-                    data={dataArray ? dataArray : { items: [] }}
                     renderHeader={showHeader ? renderHeader : () => null}
+                    onRefresh={UpPullRefresh ? UpPullRefresh : () => null}
+                    renderSection={renderSection ? renderSection : () => null}
+                    heightForSection={Section_Height ? () => Section_Height : () => 0}
+                    heightForIndexPath={Index_Height ? () => Index_Height : () => 50}
                 />
                 {
                     indexArray &&
