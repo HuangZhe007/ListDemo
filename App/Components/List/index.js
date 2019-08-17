@@ -30,14 +30,18 @@ export default class List extends Component {
         Section_Height: PropTypes.number.isRequired,//分組組頭的高度
         Index_Height: PropTypes.number.isRequired,  //分組每一項的高度
     }
-    componentWillUnmount() {
-        this.timer && clearTimeout(this.timer)
-    }
     static defaultProps = {
-        showHeader: false                           //默认不展示头部
+        Index_Height: 50,
+        Section_Height: 0,
+        showHeader: false,                           //默认不展示头部
+        UpPullRefresh: () => null,
+        renderSection: () => null,
     };
     constructor(props) {
         super(props)
+    }
+    componentWillUnmount() {
+        this.timer && clearTimeout(this.timer)
     }
     getOfset = (key) => {
         const { dataArray, Index_Height, Section_Height, HeaderHeight, showHeader } = this.props
@@ -92,16 +96,16 @@ export default class List extends Component {
         return (
             <View style={styles.Box}>
                 <LargeList
+                    onRefresh={UpPullRefresh}
+                    renderSection={renderSection}
                     renderIndexPath={renderItem}
                     refreshHeader={UpPullLoading}
-                    data={dataArray ? dataArray : []}
                     renderFooter={this._renderFooter}
+                    data={dataArray ? dataArray : []}
                     ref={ref => (this._LargeList = ref)}
+                    heightForSection={() => Section_Height}
+                    heightForIndexPath={() => Index_Height}
                     renderHeader={showHeader ? renderHeader : () => null}
-                    onRefresh={UpPullRefresh ? UpPullRefresh : () => null}
-                    renderSection={renderSection ? renderSection : () => null}
-                    heightForSection={Section_Height ? () => Section_Height : () => 0}
-                    heightForIndexPath={Index_Height ? () => Index_Height : () => 50}
                 />
                 {
                     indexArray &&
